@@ -3,7 +3,9 @@ import path from "path";
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUiDist from "swagger-ui-dist";
 
-const __dirname = path.resolve();
+// Always work relative to backend folder
+const backendDir = process.cwd(); 
+const outputDir = path.join(backendDir, "swagger-dist");
 
 const options = {
   definition: {
@@ -13,31 +15,38 @@ const options = {
       version: "1.0.0",
     },
   },
-  apis: ["./backend/server.js"],
+  apis: ["./server.js"], // server.js is inside backend
 };
 
 const swaggerSpec = swaggerJSDoc(options);
 
-// create folder
-const outputDir = path.join(__dirname, "backend/swagger-dist");
-if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir);
+// Create folder if not exists
+if (!fs.existsSync(outputDir)) {
+  fs.mkdirSync(outputDir, { recursive: true });
+}
 
-// write swagger.json
-fs.writeFileSync(path.join(outputDir, "swagger.json"), JSON.stringify(swaggerSpec, null, 2));
+// Write swagger.json
+fs.writeFileSync(
+  path.join(outputDir, "swagger.json"),
+  JSON.stringify(swaggerSpec, null, 2)
+);
 
-// copy swagger-ui-dist files
+// Copy Swagger UI files
 const swaggerUiPath = swaggerUiDist.getAbsoluteFSPath();
 
-fs.readdirSync(swaggerUiPath).forEach(file => {
+fs.readdirSync(swaggerUiPath).forEach((file) => {
   fs.copyFileSync(
     path.join(swaggerUiPath, file),
     path.join(outputDir, file)
   );
 });
 
-// modify index.html
-let index = fs.readFileSync(path.join(outputDir, "index.html"), "utf8");
-index = index.replace("https://petstore.swagger.io/v2/swagger.json", "./swagger.json");
-fs.writeFileSync(path.join(outputDir, "index.html"), index);
+// Fix index.html to load your swagger.json
+let indexHtml = fs.readFileSync(path.join(outputDir, "index.html"), "utf8");
+indexHtml = indexHtml.replace(
+  "https://petstore.swagger.io/v2/swagger.json",
+  "./swagger.json"
+);
+fs.writeFileSync(path.join(outputDir, "index.html"), indexHtml);
 
-console.log("Swagger UI static site generated successfully!");
+console.log("Swagger UI static files generated successfully!");
