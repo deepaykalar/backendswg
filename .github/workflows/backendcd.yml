@@ -1,0 +1,37 @@
+name: Backend CD
+
+on:
+  push:
+    branches: [ "main" ]
+
+permissions:
+  contents: write
+
+jobs:
+  deploy-swagger:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install backend dependencies
+        run: npm install
+        working-directory: backend
+
+      - name: Build Swagger UI (generate static files)
+        run: npm run build:swagger
+        working-directory: backend
+
+      - name: Deploy Swagger UI to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: backend/swagger-dist
+          user_name: "deepaykalar"
+          user_email: "deepykalar@gmail.com"
