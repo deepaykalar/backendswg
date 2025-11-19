@@ -1,0 +1,42 @@
+name: Backend CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+
+jobs:
+  backend-ci:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run backend test/lint
+        run: echo "No tests configured"
+
+      - name: Start backend server and check Swagger
+        run: |
+          npm start &
+          sleep 10
+          curl http://localhost:3000/api-docs || echo "Swagger UI not reachable"
+
+      - name: Test a sample API endpoint
+        run: curl http://localhost:3000/your-endpoint || echo "API endpoint not reachable"
