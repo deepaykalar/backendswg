@@ -24,11 +24,11 @@ jobs:
         run: npm install
         working-directory: backend
 
-      - name: Build Swagger UI (generate static files)
+      - name: Generate swagger.json
         run: npm run build:swagger
         working-directory: backend
 
-      - name: Deploy Swagger UI to GitHub Pages
+      - name: Deploy Swagger to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
