@@ -1,15 +1,9 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "simple API",
-    "version": "1.0.0",
-    "description": "simple API with Swagger"
+    "title": "Simple API",
+    "version": "1.0.0"
   },
-  "servers": [
-    {
-      "url": "http://localhost:5000"
-    }
-  ],
   "paths": {
     "/users": {
       "get": {
