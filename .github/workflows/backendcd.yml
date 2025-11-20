@@ -33,6 +33,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
           publish_dir: backend/swagger-dist
           user_name: "deepaykalar"
           user_email: "deepykalar@gmail.com"
